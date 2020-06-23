@@ -1,0 +1,23 @@
+#version 100
+
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 textureCoords;
+
+varying vec2 fTextureCoords;
+varying vec3 surfaceNormals;
+varying vec3 toLightVector;
+
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+uniform vec3 lightPosition;
+
+void main() {
+    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * worldPosition;
+
+    fTextureCoords = textureCoords;
+    surfaceNormals = (modelMatrix * vec4(normal, 0.0)).xyz;
+    toLightVector = lightPosition - worldPosition.xyz;
+}

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es2017",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "lib": [
+      "dom",
+      "esnext"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "node_modules/webgl-obj-loader/**/*.ts",
+    "node_modules/webgl-obj-loader/**/*.js"
+  ],
+  "exclude": [
+    "public"
+  ]
+}
