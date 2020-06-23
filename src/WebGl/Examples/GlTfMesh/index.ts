@@ -97,7 +97,7 @@ class ExampleApp {
     const program = await downloadShaderProgram(gl, vShaderUrl, fShaderUrl);
     const locations = ExampleApp.initLocations(gl, program);
 
-    const url = './3DModels/Suzanne/glTf/suzanne.glb';
+    const url = './3DModels/Suzanne/glTf/monkey_sample.glb';
     const glTf = await load(url, GLTFLoader, { postProcess: true });
 
     console.log(glTf);

@@ -5,7 +5,9 @@ import createSurface from './WebGl/Util/createSurface';
 import { mat4, vec3 } from 'gl-matrix';
 import resizeCanvas from './WebGl/Util/resizeCanvas';
 
-const surface = createSurface('canvas');
+import './styles/main.scss';
+
+const surface = createSurface('surface');
 
 ExampleApp.init(surface.gl).then((app) => {
   const projectionMatrix = mat4.create();
