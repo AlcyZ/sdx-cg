@@ -48,6 +48,7 @@ interface Locations {
     viewMatrixLoc: WebGLUniformLocation;
     projectionMatrixLoc: WebGLUniformLocation;
     lightPositionLoc: WebGLUniformLocation;
+    lightColorLoc: WebGLUniformLocation;
   };
 }
 
@@ -69,6 +70,10 @@ export interface ExampleAppRenderDescriptor {
     view: mat4;
     projection: mat4;
   };
+  light: {
+    position: vec3,
+    color: vec3
+  }
 }
 
 class ExampleApp {
@@ -138,14 +143,14 @@ class ExampleApp {
       false,
       descriptor.matrices.projection,
     );
-    // gl.uniform3fv(
-    //   uniformLocations.lightPositionLoc,
-    //   descriptor.light.position as Float32List
-    // );
-    // gl.uniform3fv(
-    //   uniformLocations.lightColorLoc,
-    //   descriptor.light.color as Float32List
-    // );
+    gl.uniform3fv(
+      uniformLocations.lightPositionLoc,
+      descriptor.light.position as Float32List,
+    );
+    gl.uniform3fv(
+      uniformLocations.lightColorLoc,
+      descriptor.light.color as Float32List,
+    );
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.index);
     gl.drawElements(
@@ -158,6 +163,10 @@ class ExampleApp {
 
   public rotateY(radian: number): void {
     mat4.rotateY(this.transformation, this.transformation, radian);
+  }
+
+  public rotateX(radian: number): void {
+    mat4.rotateX(this.transformation, this.transformation, radian);
   }
 
   private static initLocations = (
@@ -179,6 +188,7 @@ class ExampleApp {
           program,
         ),
         lightPositionLoc: safeGetUniformLocation('lightPosition', gl, program),
+        lightColorLoc: safeGetUniformLocation('lightColor', gl, program),
       },
     };
   };
@@ -217,8 +227,8 @@ class ExampleApp {
     console.log('easy peasy');
     // gl.texImage2D();
 
-    // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-    // gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.generateMipmap(gl.TEXTURE_2D);
 
     return {
       image,
