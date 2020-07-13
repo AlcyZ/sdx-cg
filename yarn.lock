@@ -3,48 +3,58 @@
 
 
 "@babel/runtime@^7.0.0", "@babel/runtime@^7.3.1":
-  version "7.10.2"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.2.tgz#d103f21f2602497d38348a32e008637d506db839"
-  integrity sha512-6sF3uQw2ivImfVIl62RZ7MXhO2tap69WeWK57vAaimT6AZbE4FbqjdEJIN1UqoD6wI6B+1n9UiagafH1sxjOtg==
+  version "7.10.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.4.tgz#a6724f1a6b8d2f6ea5236dbfe58c7d7ea9c5eb99"
+  integrity sha512-UpTN5yUJr9b4EX2CnGNWIvER7Ab83ibv0pcvvHc4UOdrBI5jb8bj+32cCwPX6xu0mt2daFNjYhoi+X7beH0RSw==
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@loaders.gl/core@2.1.6", "@loaders.gl/core@^2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@loaders.gl/core/-/core-2.1.6.tgz#9c3e0cf5a1aebb672c50876ab75fd35033b8672c"
-  integrity sha512-1uxlSZ3dKbraWmvsOsBeSfJxR/+mXjDCsDLkl8N9QzXeN1nIer3siDPLqckox4MMsPxPo5uo1Be8iwORAUo3VQ==
+"@loaders.gl/core@2.2.7", "@loaders.gl/core@^2.2.7":
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@loaders.gl/core/-/core-2.2.7.tgz#b5cb7dd5ffe960e9a4a09a9248eb3d9b63f87eb3"
+  integrity sha512-y7Pt1lt/Zb+NAzD130xJ7p58ccFuFw16x0bQHKPABrM7EdRJgEvyVTZnJf34fqjY3kgnzfOyJfcOSMGTqD/o0w==
   dependencies:
     "@babel/runtime" "^7.3.1"
-    "@loaders.gl/loader-utils" "2.1.6"
+    "@loaders.gl/loader-utils" "2.2.7"
 
-"@loaders.gl/gltf@^2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@loaders.gl/gltf/-/gltf-2.1.6.tgz#077a203e749bf4bdb57a3653768e8d836cd59656"
-  integrity sha512-Rb0vMGbAT2GHoSS/IKH5I4FQ4vzu8LhkztFjl8D4N0RQHKYjLSbGXo3w8URkUtv5UCUqChBMHQ6PQT6nJp5v8A==
-  dependencies:
-    "@loaders.gl/core" "2.1.6"
-    "@loaders.gl/images" "2.1.6"
-    "@loaders.gl/loader-utils" "2.1.6"
-
-"@loaders.gl/images@2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@loaders.gl/images/-/images-2.1.6.tgz#af729ff7e1a6ea43cc693946abce109a0ec473fa"
-  integrity sha512-KE0fEJA3Luiqktgb2bfj/+de3QjWmP8L+hh2Pu03doxIgvV8mhhvduy5rBMMtoR0M3HBSPRI0DKKF5mR0Hb46Q==
-  dependencies:
-    "@loaders.gl/loader-utils" "2.1.6"
-
-"@loaders.gl/loader-utils@2.1.6":
-  version "2.1.6"
-  resolved "https://registry.yarnpkg.com/@loaders.gl/loader-utils/-/loader-utils-2.1.6.tgz#8eb5a9a2215b3c94c3bb548767cbc276e3701a5c"
-  integrity sha512-V9ZJH60HwSmSIw2jqNDMFpDqZVfy02WZ1/1e2ENw3PODE8ubNqs1bQ8nFj9omqwVMPF7fBVLvzoeoGrpeW0gfQ==
+"@loaders.gl/draco@2.2.7":
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@loaders.gl/draco/-/draco-2.2.7.tgz#825c6cace7e5153f8f6bb771f2207ab622c7e848"
+  integrity sha512-kom5iivehOgX4rIt+5jfHUFGQY+KA8cjH1IKFXUmFw3B7IibHmE9VFkej4T/llX5Qc9v9gzwCmp5ReyGnwtoqQ==
   dependencies:
     "@babel/runtime" "^7.3.1"
-    "@probe.gl/stats" "^3.2.1"
+    "@loaders.gl/loader-utils" "2.2.7"
+    draco3d "^1.3.4"
 
-"@probe.gl/stats@^3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@probe.gl/stats/-/stats-3.2.1.tgz#4e95c75513229ebb01384045e89524a466c022eb"
-  integrity sha512-tXe5krgbodxtVdUVWG4oIicMoCHNGp7QYkaHSDrUeTfJVqYuZz99T6r7qmn0bCo4wQlzn936jJ+QiAltHxatig==
+"@loaders.gl/gltf@^2.2.7":
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@loaders.gl/gltf/-/gltf-2.2.7.tgz#736ed93c7330c9e8cc45684702f29fcadff996f8"
+  integrity sha512-jXPGNHiZlFGa2IIkx4YApulw/G3nFvj2sMfQzkctlIp/YLWdNgVNxfmaZzZMp4ngC9RVeOAhwImcZcU3HC6M4g==
+  dependencies:
+    "@loaders.gl/core" "2.2.7"
+    "@loaders.gl/draco" "2.2.7"
+    "@loaders.gl/images" "2.2.7"
+    "@loaders.gl/loader-utils" "2.2.7"
+
+"@loaders.gl/images@2.2.7":
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@loaders.gl/images/-/images-2.2.7.tgz#1a2b2d6ee03ef86a94a7645b9e493159c84c93b2"
+  integrity sha512-gbkIkZuIvCb7sfiptwBCaxmYDsqlmAwWtQurXTrVejb7hPew+9akPfB2SGK9q1Tv9CHauGNUXYOC3Oqq+KvIjw==
+  dependencies:
+    "@loaders.gl/loader-utils" "2.2.7"
+
+"@loaders.gl/loader-utils@2.2.7":
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/@loaders.gl/loader-utils/-/loader-utils-2.2.7.tgz#daea00ef2f33f9af934d65c552539ea9a6adc792"
+  integrity sha512-JgpBvVNrlmWHiJxxHu8Jdzi2gV05Vnw1awdVBihgvFoNVFvVPIMuH1WWbcMQcR2ycWklTdEFBw7REuWpoTSo2Q==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    "@probe.gl/stats" "^3.3.0"
+
+"@probe.gl/stats@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@probe.gl/stats/-/stats-3.3.0.tgz#66f684ead7cee1f2aad5ee5e9d297e84e08c5536"
+  integrity sha512-CV4c3EgallqZTO88u34/u9L5asL0nCVP1BEkb4qcXlh8Qz2Vmygbyjz1ViQsct6rSi2lJ52lo6W0PnlpZJJvcA==
   dependencies:
     "@babel/runtime" "^7.0.0"
 
@@ -1431,6 +1441,11 @@ dot-case@^3.0.3:
   dependencies:
     no-case "^3.0.3"
     tslib "^1.10.0"
+
+draco3d@^1.3.4:
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/draco3d/-/draco3d-1.3.6.tgz#e4d9e7d846637775328c903721c932b953dce331"
+  integrity sha512-zZoH5JNcdWDrUb2ks2mbzGDUUPvDaDf1ysTJS2St+3/F/8XcKAX4VKgzPjTP7MfHegHQ7Udv8ovS+R3AgXlH7g==
 
 duplexify@^3.4.2, duplexify@^3.6.0:
   version "3.7.1"

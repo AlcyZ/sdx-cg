@@ -13,7 +13,7 @@ void main() {
     vec3 unitLightVector = normalize(toLightVector);
 
     float nDot = dot(unitNormal, unitLightVector);
-    float brightness = max(nDot, 0.0);
+    float brightness = max(nDot, 0.4);
     vec3 diffuse = brightness * lightColor;
 
     gl_FragColor = vec4(diffuse, 1.0) * texture2D(modelTexture, fTextureCoords);

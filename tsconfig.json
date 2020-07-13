@@ -9,13 +9,12 @@
     "lib": [
       "dom",
       "esnext"
-    ]
+    ],
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.js",
-    "node_modules/webgl-obj-loader/**/*.ts",
-    "node_modules/webgl-obj-loader/**/*.js"
+    "src/**/*.js"
   ],
   "exclude": [
     "public"
