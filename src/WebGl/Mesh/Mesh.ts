@@ -1,14 +1,13 @@
 import downloadShaderProgram from '../Util/downloadShaderProgram';
-import { Buffer, buildBuffer2 } from '../Util/buildBuffer';
-import { buildIndexBuffer2, IndexBuffer } from '../Util/buildIndexBuffer';
-import safeGetAttribLocation from '../Util/safeGetAttribLocation';
-import safeGetUniformLocation from '../Util/safeGetUniformLocation';
+import buildBuffer, { Buffer } from '../Util/buildBuffer';
+import buildIndexBuffer, { IndexBuffer } from '../Util/buildIndexBuffer';
 import bindBuffer from '../Util/bindBuffer';
 import buildTexture from '../Util/buildTexture';
 import { mat4, vec3 } from 'gl-matrix';
 import { load } from '@loaders.gl/core';
 // @ts-ignore
 import { GLTFLoader } from '@loaders.gl/gltf';
+import safeGetAttribLocation from '../Util/safeGetAttribLocation';
 
 const vShaderUrl = './WebGl/Mesh/Shaders/vertex.glsl.txt';
 const fShaderUrl = './WebGl/Mesh/Shaders/fragment.glsl.txt';
@@ -180,15 +179,11 @@ class Mesh {
         textureCoordsLoc: safeGetAttribLocation('textureCoords', gl, program),
       },
       uniform: {
-        modelMatrixLoc: safeGetUniformLocation('modelMatrix', gl, program),
-        viewMatrixLoc: safeGetUniformLocation('viewMatrix', gl, program),
-        projectionMatrixLoc: safeGetUniformLocation(
-          'projectionMatrix',
-          gl,
-          program,
-        ),
-        lightPositionLoc: safeGetUniformLocation('lightPosition', gl, program),
-        lightColorLoc: safeGetUniformLocation('lightColor', gl, program),
+        modelMatrixLoc: gl.getUniformLocation(program, 'modelMatrix') as WebGLUniformLocation,
+        viewMatrixLoc: gl.getUniformLocation(program, 'viewMatrix') as WebGLUniformLocation,
+        projectionMatrixLoc: gl.getUniformLocation(program, 'projectionMatrix') as WebGLUniformLocation,
+        lightPositionLoc: gl.getUniformLocation(program, 'lightPosition') as WebGLUniformLocation,
+        lightColorLoc: gl.getUniformLocation(program, 'lightColor') as WebGLUniformLocation,
       },
     };
   };
@@ -199,19 +194,19 @@ class Mesh {
     textureImage: HTMLImageElement,
   ): Buffers => {
     return {
-      position: buildBuffer2(
+      position: buildBuffer(
         gl,
         bufferInfo.position.value,
         bufferInfo.position.components,
       ),
-      normal: buildBuffer2(
+      normal: buildBuffer(
         gl,
         bufferInfo.normal.value,
         bufferInfo.normal.components,
       ),
-      index: buildIndexBuffer2(gl, bufferInfo.indices.value, bufferInfo.indices.components),
+      index: buildIndexBuffer(gl, bufferInfo.indices.value, bufferInfo.indices.components),
       texture: buildTexture(gl, textureImage),
-      textureCoords: buildBuffer2(
+      textureCoords: buildBuffer(
         gl,
         bufferInfo.texCoord.value,
         bufferInfo.texCoord.components,

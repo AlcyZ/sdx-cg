@@ -1,6 +1,6 @@
 import { Buffer } from './buildBuffer';
 
-const bindBuffer = (
+export default (
   gl: WebGLRenderingContext,
   location: number,
   buffer: Buffer,
@@ -9,5 +9,3 @@ const bindBuffer = (
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   gl.vertexAttribPointer(location, buffer.itemSize, gl.FLOAT, false, 0, 0);
 };
-
-export default bindBuffer;
