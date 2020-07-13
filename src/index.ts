@@ -4,48 +4,90 @@ import resizeCanvas from './WebGl/Util/resizeCanvas';
 import Mesh, { MeshRenderDescriptor } from './WebGl/Mesh/Mesh';
 
 import './styles/main.scss';
+import Camera from './Camera/Camera';
 
-const surface = createSurface('surface');
-
-Mesh.init({ gl: surface.gl, url: './3DModels/Suzanne/glTf/monkey_sample.glb' }).then((mesh: Mesh) => {
+const createProjectionMatrix = (canvas: HTMLCanvasElement): mat4 => {
   const projectionMatrix = mat4.create();
-  const aspect = Math.abs(surface.canvas.width / surface.canvas.height);
+  const aspect = Math.abs(canvas.width / canvas.height);
   const degree = 60;
   const fov = (degree * Math.PI) / 180;
 
   mat4.perspective(projectionMatrix, fov, aspect, 1, 100.0);
 
-  const viewMatrix = mat4.create();
-  mat4.translate(viewMatrix, viewMatrix, vec3.fromValues(0, -3, -10));
+  return projectionMatrix;
+};
 
-  const descriptor: MeshRenderDescriptor = {
+const renderLoop = (meshes: Mesh[], renderDescriptor: MeshRenderDescriptor, canvas: HTMLCanvasElement) => {
+  // renderDescriptor.gl.clearColor(0.1, 0.1, 0.1, 1.0);
+  // renderDescriptor.gl.clearColor(1, 1, 1, 1.0);
+  renderDescriptor.gl.clearColor(0.76, 0.76, 0.76, 1.0);
+  renderDescriptor.gl.clear(renderDescriptor.gl.COLOR_BUFFER_BIT | renderDescriptor.gl.DEPTH_BUFFER_BIT);
+
+  resizeCanvas(canvas);
+  renderDescriptor.gl.viewport(0, 0, canvas.width, canvas.height);
+
+  renderDescriptor.gl.enable(renderDescriptor.gl.CULL_FACE);
+  renderDescriptor.gl.enable(renderDescriptor.gl.DEPTH_TEST);
+
+  meshes.forEach((mesh: Mesh) => {
+    mesh.render(renderDescriptor);
+  });
+};
+
+const run = async () => {
+  const surface = createSurface('surface');
+  const projectionMatrix = createProjectionMatrix(surface.canvas);
+
+  const camera = Camera.new();
+  camera.translate(0, -3, -15);
+
+  const light = {
+    color: vec3.fromValues(0.8, 0.8, 0.8),
+    position: vec3.fromValues(0.0, 0.0, 2.0),
+  };
+
+  const renderDescriptor: MeshRenderDescriptor = {
     gl: surface.gl,
+    light: light,
     matrices: {
       projection: projectionMatrix,
-      view: viewMatrix,
-    },
-    light: {
-      color: vec3.fromValues(0.8, 0.8, 0.8),
-      // color: vec3.fromValues(1.0, 1.0, 1.0),
-      position: vec3.fromValues(0.0, 0.0, 2.0),
+      view: camera.position(),
     },
   };
-  const gl = surface.gl;
 
-  const renderLoop = () => {
-    mesh.rotateY(0.05);
+  const monkeyOne = await Mesh.init({
+    gl: surface.gl,
+    url: './3DModels/Suzanne/glTf/monkey_sample.glb',
+  });
+  monkeyOne.translate(-7, 0, 0);
 
-    gl.clearColor(0.1, 0.1, 0.1, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  const monkeyTwo = await Mesh.init({
+    gl: surface.gl,
+    url: './3DModels/Suzanne/glTf/monkey_sample.glb',
+  });
+  monkeyTwo.translate(7, 0, 0);
+  monkeyTwo.rotateX(45);
 
-    resizeCanvas(surface.canvas);
-    gl.viewport(0, 0, surface.canvas.width, surface.canvas.height);
+  const idkModel = await Mesh.init({
+    gl: surface.gl,
+    url: './3DModels/idk.glb',
+  });
 
-    gl.enable(gl.CULL_FACE);
-    gl.enable(gl.DEPTH_TEST);
+  const meshes = [
+    monkeyOne,
+    monkeyTwo,
+    idkModel,
+  ];
 
-    mesh.render(descriptor);
-    requestAnimationFrame(renderLoop);
+  const render = () => {
+    monkeyOne.rotateZ(0.05);
+    idkModel.rotateY(0.05);
+
+    renderLoop(meshes, renderDescriptor, surface.canvas);
+    requestAnimationFrame(render);
   };
-  renderLoop();
-});
+
+  render();
+};
+
+run();
