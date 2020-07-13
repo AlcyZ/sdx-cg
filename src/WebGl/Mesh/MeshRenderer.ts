@@ -1,12 +1,14 @@
 import bindBuffer from '../Util/bindBuffer';
-import { Buffers, ShaderLocations } from './Mesh';
+import { Buffers, ShaderLocations, Texture } from './Mesh';
 import { mat4, vec3 } from 'gl-matrix';
+import bindTexture from '../Util/bindTexture';
 
 export interface MeshRendererDescriptor {
   gl: WebGLRenderingContext;
   program: WebGLProgram;
   shaderLocations: ShaderLocations;
   buffers: Buffers;
+  texture: Texture;
   matrices: {
     transformation: mat4;
     view: mat4;
@@ -25,6 +27,8 @@ export default class MeshRenderer {
     const attribLocations = descriptor.shaderLocations.attribute;
 
     gl.useProgram(descriptor.program);
+
+    bindTexture(gl, descriptor.texture.buffer, descriptor.texture.image);
 
     bindBuffer(gl, attribLocations.positionLoc, descriptor.buffers.position);
     bindBuffer(gl, attribLocations.normalLoc, descriptor.buffers.normal);

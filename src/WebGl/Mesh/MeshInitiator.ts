@@ -1,7 +1,6 @@
 import buildBuffer from '../Util/buildBuffer';
 import buildIndexBuffer from '../Util/buildIndexBuffer';
-import buildTexture from '../Util/buildTexture';
-import Mesh, { Buffers, MeshBufferInfo, ShaderLocations } from './Mesh';
+import Mesh, { Buffers, MeshBufferInfo, ShaderLocations, Texture } from './Mesh';
 import safeGetAttribLocation from '../Util/safeGetAttribLocation';
 import downloadShaderProgram from '../Util/downloadShaderProgram';
 import { load } from '@loaders.gl/core';
@@ -33,9 +32,13 @@ export default class MeshInitiator {
         texCoord: glTfMeshInfo.attributes.TEXCOORD_0,
         indices: glTfMeshInfo.indices,
       };
-      const buffers = MeshInitiator.initBuffers(descriptor.gl, bufferInfo, glTf.images[0].image);
+      const buffers = MeshInitiator.initBuffers(descriptor.gl, bufferInfo);
+      const texture: Texture = {
+        image: glTf.images[0].image,
+        buffer: descriptor.gl.createTexture() as WebGLTexture,
+      };
 
-      return new Mesh(program, locations, buffers);
+      return new Mesh(program, locations, buffers, texture);
     } catch (e) {
       throw new Error('Could not create mesh due to invalid glTf!');
     }
@@ -64,7 +67,6 @@ export default class MeshInitiator {
   private static initBuffers = (
     gl: WebGLRenderingContext,
     bufferInfo: MeshBufferInfo,
-    textureImage: HTMLImageElement,
   ): Buffers => {
     return {
       position: buildBuffer(
@@ -78,7 +80,6 @@ export default class MeshInitiator {
         bufferInfo.normal.components,
       ),
       index: buildIndexBuffer(gl, bufferInfo.indices.value, bufferInfo.indices.components),
-      texture: buildTexture(gl, textureImage),
       textureCoords: buildBuffer(
         gl,
         bufferInfo.texCoord.value,

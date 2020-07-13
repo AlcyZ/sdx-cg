@@ -44,8 +44,12 @@ export interface Buffers {
   position: Buffer;
   normal: Buffer;
   index: IndexBuffer;
-  texture: WebGLTexture;
   textureCoords: Buffer;
+}
+
+export interface Texture {
+  buffer: WebGLTexture;
+  image: TexImageSource;
 }
 
 export interface MeshRenderDescriptor {
@@ -65,16 +69,19 @@ class Mesh {
   private readonly program: WebGLProgram;
   private readonly locations: ShaderLocations;
   private readonly buffers: Buffers;
+  private readonly texture: Texture;
   private readonly transformation: mat4;
 
   constructor(
     program: WebGLProgram,
     locations: ShaderLocations,
     buffers: Buffers,
+    texture: Texture,
   ) {
     this.program = program;
     this.locations = locations;
     this.buffers = buffers;
+    this.texture = texture;
     this.transformation = mat4.create();
     this.renderer = new MeshRenderer();
   }
@@ -93,12 +100,17 @@ class Mesh {
       },
       shaderLocations: this.locations,
       buffers: this.buffers,
+      texture: this.texture,
       program: this.program,
       gl: descriptor.gl,
       light: descriptor.light,
     };
     this.renderer.render(renderDescriptor);
   };
+
+  public translate(x: number, y: number, z: number): void {
+    mat4.translate(this.transformation, this.transformation, [x, y, z]);
+  }
 
   public rotateX(radian: number): void {
     mat4.rotateX(this.transformation, this.transformation, radian);
