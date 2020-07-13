@@ -1,16 +1,10 @@
-import downloadShaderProgram from '../Util/downloadShaderProgram';
-import buildBuffer, { Buffer } from '../Util/buildBuffer';
-import buildIndexBuffer, { IndexBuffer } from '../Util/buildIndexBuffer';
-import bindBuffer from '../Util/bindBuffer';
-import buildTexture from '../Util/buildTexture';
+import { Buffer } from '../Util/buildBuffer';
+import { IndexBuffer } from '../Util/buildIndexBuffer';
 import { mat4, vec3 } from 'gl-matrix';
-import { load } from '@loaders.gl/core';
 // @ts-ignore
-import { GLTFLoader } from '@loaders.gl/gltf';
-import safeGetAttribLocation from '../Util/safeGetAttribLocation';
+import MeshRenderer, { MeshRendererDescriptor } from './MeshRenderer';
+import MeshInitiator, { MeshInitiatorDescriptor } from './MeshInitiator';
 
-const vShaderUrl = './WebGl/Mesh/Shaders/vertex.glsl.txt';
-const fShaderUrl = './WebGl/Mesh/Shaders/fragment.glsl.txt';
 
 interface BufferInfo {
   components: number;
@@ -24,14 +18,14 @@ interface IndexBufferInfo extends BufferInfo {
   value: Uint16Array;
 }
 
-interface MeshBufferInfo {
+export interface MeshBufferInfo {
   normal: VertexBufferInfo;
   position: VertexBufferInfo;
   texCoord: VertexBufferInfo;
   indices: IndexBufferInfo;
 }
 
-interface ShaderLocations {
+export interface ShaderLocations {
   attribute: {
     positionLoc: number;
     normalLoc: number;
@@ -46,7 +40,7 @@ interface ShaderLocations {
   };
 }
 
-interface Buffers {
+export interface Buffers {
   position: Buffer;
   normal: Buffer;
   index: IndexBuffer;
@@ -66,12 +60,8 @@ export interface MeshRenderDescriptor {
   }
 }
 
-export interface MeshInitDescriptor {
-  gl: WebGLRenderingContext;
-  url: string;
-}
-
 class Mesh {
+  private readonly renderer: MeshRenderer;
   private readonly program: WebGLProgram;
   private readonly locations: ShaderLocations;
   private readonly buffers: Buffers;
@@ -86,133 +76,41 @@ class Mesh {
     this.locations = locations;
     this.buffers = buffers;
     this.transformation = mat4.create();
+    this.renderer = new MeshRenderer();
   }
 
   public static init = async (
-    descriptor: MeshInitDescriptor,
+    descriptor: MeshInitiatorDescriptor,
   ): Promise<Mesh> => {
-    const program = await downloadShaderProgram(descriptor.gl, vShaderUrl, fShaderUrl);
-    const locations = Mesh.initLocations(descriptor.gl, program);
-
-    const glTf = await load(descriptor.url, GLTFLoader, { postProcess: true });
-
-    try {
-      const glTfMeshInfo = glTf.meshes[0].primitives[0];
-      const bufferInfo: MeshBufferInfo = {
-        position: glTfMeshInfo.attributes.POSITION,
-        normal: glTfMeshInfo.attributes.NORMAL,
-        texCoord: glTfMeshInfo.attributes.TEXCOORD_0,
-        indices: glTfMeshInfo.indices,
-      };
-      const buffers = Mesh.initBuffers(descriptor.gl, bufferInfo, glTf.images[0].image);
-
-      return new Mesh(program, locations, buffers);
-    } catch (e) {
-      throw new Error('Could not create mesh due to invalid glTf!');
-    }
+    return MeshInitiator.init(descriptor);
   };
 
   public render = (descriptor: MeshRenderDescriptor): void => {
-    const gl = descriptor.gl;
-    const uniformLocations = this.locations.uniform;
-    const attribLocations = this.locations.attribute;
-
-    gl.useProgram(this.program);
-
-    bindBuffer(gl, attribLocations.positionLoc, this.buffers.position);
-    bindBuffer(gl, attribLocations.normalLoc, this.buffers.normal);
-    bindBuffer(
-      gl,
-      attribLocations.textureCoordsLoc,
-      this.buffers.textureCoords,
-    );
-
-    gl.uniformMatrix4fv(
-      uniformLocations.modelMatrixLoc,
-      false,
-      this.transformation,
-    );
-    gl.uniformMatrix4fv(
-      uniformLocations.viewMatrixLoc,
-      false,
-      descriptor.matrices.view,
-    );
-    gl.uniformMatrix4fv(
-      uniformLocations.projectionMatrixLoc,
-      false,
-      descriptor.matrices.projection,
-    );
-    gl.uniform3fv(
-      uniformLocations.lightPositionLoc,
-      descriptor.light.position as Float32List,
-    );
-    gl.uniform3fv(
-      uniformLocations.lightColorLoc,
-      descriptor.light.color as Float32List,
-    );
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.index);
-    gl.drawElements(
-      gl.TRIANGLES,
-      this.buffers.index.numItems,
-      gl.UNSIGNED_SHORT,
-      0,
-    );
+    const renderDescriptor: MeshRendererDescriptor = {
+      matrices: {
+        transformation: this.transformation,
+        ...descriptor.matrices,
+      },
+      shaderLocations: this.locations,
+      buffers: this.buffers,
+      program: this.program,
+      gl: descriptor.gl,
+      light: descriptor.light,
+    };
+    this.renderer.render(renderDescriptor);
   };
-
-  public rotateY(radian: number): void {
-    mat4.rotateY(this.transformation, this.transformation, radian);
-  }
 
   public rotateX(radian: number): void {
     mat4.rotateX(this.transformation, this.transformation, radian);
   }
 
-  private static initLocations = (
-    gl: WebGLRenderingContext,
-    program: WebGLProgram,
-  ): ShaderLocations => {
-    return {
-      attribute: {
-        positionLoc: safeGetAttribLocation('position', gl, program),
-        normalLoc: safeGetAttribLocation('normal', gl, program),
-        textureCoordsLoc: safeGetAttribLocation('textureCoords', gl, program),
-      },
-      uniform: {
-        modelMatrixLoc: gl.getUniformLocation(program, 'modelMatrix') as WebGLUniformLocation,
-        viewMatrixLoc: gl.getUniformLocation(program, 'viewMatrix') as WebGLUniformLocation,
-        projectionMatrixLoc: gl.getUniformLocation(program, 'projectionMatrix') as WebGLUniformLocation,
-        lightPositionLoc: gl.getUniformLocation(program, 'lightPosition') as WebGLUniformLocation,
-        lightColorLoc: gl.getUniformLocation(program, 'lightColor') as WebGLUniformLocation,
-      },
-    };
-  };
+  public rotateY(radian: number): void {
+    mat4.rotateY(this.transformation, this.transformation, radian);
+  }
 
-  private static initBuffers = (
-    gl: WebGLRenderingContext,
-    bufferInfo: MeshBufferInfo,
-    textureImage: HTMLImageElement,
-  ): Buffers => {
-    return {
-      position: buildBuffer(
-        gl,
-        bufferInfo.position.value,
-        bufferInfo.position.components,
-      ),
-      normal: buildBuffer(
-        gl,
-        bufferInfo.normal.value,
-        bufferInfo.normal.components,
-      ),
-      index: buildIndexBuffer(gl, bufferInfo.indices.value, bufferInfo.indices.components),
-      texture: buildTexture(gl, textureImage),
-      textureCoords: buildBuffer(
-        gl,
-        bufferInfo.texCoord.value,
-        bufferInfo.texCoord.components,
-      ),
-    };
-  };
+  public rotateZ(radian: number): void {
+    mat4.rotateZ(this.transformation, this.transformation, radian);
+  }
 }
 
 export default Mesh;
